@@ -1,0 +1,35 @@
+services:
+  - type: web
+    name: citizenparticipation-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: citizenparticipation-db
+          property: connectionString
+      - key: FRONTEND_ORIGIN
+        value: https://your-vercel-domain.vercel.app
+      - key: ENVIRONMENT
+        value: production
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USE_TLS
+        value: "true"
+      - key: SMTP_USERNAME
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: MAIL_FROM
+        value: heedou123@gmail.com
+      - key: ADMIN_EMAIL
+        value: heedou123@police.go.kr
+databases:
+  - name: citizenparticipation-db
+    plan: free

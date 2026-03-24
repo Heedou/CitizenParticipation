@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>모두의 경찰관 | 소통광장</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+::selection{background:rgba(59,130,246,.18)}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:3px}
+html{scroll-behavior:smooth}
+body{font-family:'Pretendard','Noto Sans KR',-apple-system,sans-serif;color:#1E293B;background:#fff;min-height:100vh;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:pointer}
+input,textarea,select{font-family:inherit}
+
+:root{
+  --navy:#0B1A2F;--deep:#0E2148;--blue:#1A3A6B;--blue-mid:#2554A0;
+  --accent:#3B7DED;--accent-lt:#6BA4F7;--accent-bg:rgba(59,125,237,.06);
+  --gold:#D4A843;--gold-lt:#F5E6B8;
+  --g50:#F8FAFC;--g100:#F1F5F9;--g200:#E2E8F0;--g300:#CBD5E1;
+  --g400:#94A3B8;--g500:#64748B;--g600:#475569;--g700:#334155;--g800:#1E293B;
+  --red:#EF4444;--green:#10B981;--green-bg:rgba(16,185,129,.08);
+  --radius:14px;--radius-lg:20px;--radius-xl:24px;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.04);
+  --shadow-md:0 4px 20px rgba(0,0,0,.06);
+  --shadow-lg:0 12px 40px rgba(0,0,0,.08);
+  --shadow-xl:0 20px 60px rgba(0,0,0,.1);
+}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.fade-up{animation:fadeUp .7s ease both}
+.fade-up-d1{animation:fadeUp .7s .1s ease both}
+.fade-up-d2{animation:fadeUp .7s .2s ease both}
+.fade-up-d3{animation:fadeUp .7s .3s ease both}
+.fade-up-d4{animation:fadeUp .7s .4s ease both}
+
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+.container-sm{max-width:920px;margin:0 auto;padding:0 24px}
+.container-xs{max-width:800px;margin:0 auto;padding:0 24px}
+
+.header{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(11,26,47,.65);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:all .35s ease}
+.header.scrolled{background:rgba(11,26,47,.92);box-shadow:0 2px 24px rgba(0,0,0,.12)}
+.header-inner{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{display:flex;align-items:center;gap:10px;cursor:pointer;transition:opacity .2s}
+.logo:hover{opacity:.85}
+.logo-icon{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-lt));display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;letter-spacing:-.5px;box-shadow:0 2px 12px rgba(59,125,237,.35)}
+.logo-text{font-size:15px;font-weight:700;color:#fff;letter-spacing:-.3px;line-height:1.2}
+.logo-sub{font-size:9.5px;color:var(--g400);letter-spacing:1.5px;text-transform:uppercase;margin-top:1px}
+nav{display:flex;gap:2px;align-items:center}
+nav button{background:transparent;border:none;color:rgba(255,255,255,.55);font-size:14px;font-weight:400;padding:8px 16px;border-radius:10px;transition:all .2s;position:relative}
+nav button:hover{color:rgba(255,255,255,.9);background:rgba(255,255,255,.06)}
+nav button.active{color:#fff;font-weight:600;background:rgba(59,125,237,.2)}
+nav button.active::after{content:'';position:absolute;bottom:4px;left:50%;transform:translateX(-50%);width:16px;height:2px;background:var(--accent-lt);border-radius:1px}
+
+.img-placeholder{background:linear-gradient(135deg,var(--g50),var(--g200));border:2px dashed var(--g300);border-radius:var(--radius-lg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--g400);font-size:13px;overflow:hidden;flex-shrink:0;transition:all .3s}
+.img-placeholder:hover{border-color:var(--accent);color:var(--accent)}
+.img-placeholder.dark{border-color:rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:rgba(255,255,255,.2)}
+.img-placeholder.dark:hover{border-color:rgba(255,255,255,.25);color:rgba(255,255,255,.35)}
+
+.tag{font-size:11px;font-weight:600;padding:4px 11px;border-radius:8px;letter-spacing:-.1px;display:inline-block;line-height:1.4}
+.tag-accent{color:var(--accent);background:var(--accent-bg)}
+.tag-green{color:var(--green);background:var(--green-bg)}
+.tag-gold{color:#B8860B;background:rgba(212,168,67,.1)}
+.tag-red{color:var(--red);background:rgba(239,68,68,.07)}
+.tag-gray{color:var(--g400);background:var(--g100)}
+
+.btn{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;border-radius:12px;transition:all .25s ease;border:none;letter-spacing:-.2px}
+.btn-primary{padding:13px 30px;background:linear-gradient(135deg,var(--accent),var(--accent-lt));color:#fff;box-shadow:0 4px 16px rgba(59,125,237,.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(59,125,237,.35)}
+.btn-primary:disabled{background:var(--g300);box-shadow:none;cursor:not-allowed;opacity:.5;transform:none}
+.btn-secondary{padding:13px 26px;background:#fff;color:var(--g700);border:1.5px solid var(--g200)}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-bg)}
+.btn-ghost{padding:13px 26px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.85);border:1.5px solid rgba(255,255,255,.15)}
+.btn-ghost:hover{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.25)}
+
+.section-title{text-align:center;margin-bottom:48px}
+.section-title .label{display:inline-block;font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-bg);padding:6px 16px;border-radius:20px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px}
+.section-title h2{font-size:30px;font-weight:800;color:var(--g800);margin-bottom:10px;letter-spacing:-.5px;line-height:1.3}
+.section-title p{font-size:15px;color:var(--g500);max-width:520px;margin:0 auto;line-height:1.65}
+
+.page-banner{background:linear-gradient(160deg,var(--navy) 0%,var(--blue-mid) 100%);padding:56px 24px 48px;text-align:center;margin-top:64px;position:relative;overflow:hidden}
+.page-banner::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(59,125,237,.08),transparent 60%)}
+.page-banner h1{font-size:30px;font-weight:800;color:#fff;margin-bottom:8px;position:relative}
+.page-banner p{font-size:15px;color:var(--g400);position:relative}
+
+.hero{
+  background:linear-gradient(165deg,rgba(11,26,47,.88) 0%,rgba(13,31,64,.82) 35%,rgba(37,84,160,.75) 100%),url('bg-hero.jpg') center/cover no-repeat;
+  padding-top:130px;padding-bottom:90px;position:relative;overflow:hidden;
+}
+.hero::before{content:'';position:absolute;inset:0;opacity:.035;background-image:radial-gradient(circle at 20% 50%,rgba(59,125,237,.4) 0%,transparent 50%),radial-gradient(circle at 80% 30%,rgba(107,164,247,.3) 0%,transparent 40%),linear-gradient(rgba(255,255,255,.15) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.15) 1px,transparent 1px);background-size:100% 100%,100% 100%,48px 48px,48px 48px}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(60px);pointer-events:none}
+.hero-orb-1{width:400px;height:400px;background:rgba(59,125,237,.12);top:-100px;right:-100px;animation:float 8s ease-in-out infinite}
+.hero-orb-2{width:300px;height:300px;background:rgba(212,168,67,.06);bottom:-80px;left:-60px;animation:float 10s 2s ease-in-out infinite}
+.hero-inner{display:flex;gap:32px;align-items:center;flex-wrap:wrap;position:relative;z-index:1}
+.hero-content{flex:1 1 420px}
+.hero-tagline{font-size:46px;font-weight:800;color:#fff;margin-bottom:10px;letter-spacing:-1.2px;line-height:1.25}
+.hero-tagline em{font-style:normal;background:linear-gradient(90deg,var(--accent-lt),var(--gold-lt));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero h1{font-size:22px;font-weight:600;color:rgba(255,255,255,.45);line-height:1.5;margin-bottom:20px;letter-spacing:0}
+.hero h1 span{color:rgba(255,255,255,.6);font-weight:500}
+.hero-desc{font-size:16px;color:rgba(255,255,255,.5);line-height:1.75;margin-bottom:36px;max-width:480px}
+.hero-buttons{display:flex;gap:12px;flex-wrap:wrap}
+.hero-visual{flex:1 1 400px;display:flex;justify-content:center}
+
+.stats-bar{max-width:1000px;margin:-44px auto 0;padding:28px 48px;background:#fff;border-radius:var(--radius-xl);box-shadow:var(--shadow-xl);display:flex;justify-content:space-around;flex-wrap:wrap;gap:24px;position:relative;z-index:2}
+.stat-item{text-align:center}
+.stat-num{font-size:34px;font-weight:800;color:var(--blue);letter-spacing:-1px}
+.stat-num small{font-size:15px;font-weight:500;color:var(--g400)}
+.stat-label{font-size:13px;color:var(--g500);margin-top:3px;font-weight:500}
+
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+.card{background:#fff;border-radius:var(--radius-lg);padding:30px;border:1px solid var(--g200);transition:all .3s ease;box-shadow:var(--shadow-sm);cursor:pointer;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent-lt));transform:scaleX(0);transform-origin:left;transition:transform .3s ease}
+.card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:transparent}
+.card:hover::before{transform:scaleX(1)}
+.card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.card-icon{font-size:36px;line-height:1}
+.card h3{font-size:19px;font-weight:700;color:var(--g800);margin-bottom:6px;letter-spacing:-.3px}
+.card p{font-size:14px;color:var(--g500);line-height:1.55}
+
+.services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px}
+.service-mini{background:var(--g50);border-radius:var(--radius);padding:28px 20px;text-align:center;border:1px solid transparent;transition:all .3s ease;cursor:pointer}
+.service-mini:hover{background:#fff;border-color:var(--accent);box-shadow:var(--shadow-md);transform:translateY(-3px)}
+.service-mini .icon{font-size:32px;margin-bottom:12px;display:block}
+.service-mini h4{font-size:15px;font-weight:700;color:var(--g800);margin-bottom:5px}
+.service-mini p{font-size:13px;color:var(--g500);line-height:1.45}
+
+.cta-section{padding:72px 24px;background:linear-gradient(140deg,var(--navy),var(--blue-mid));text-align:center;position:relative;overflow:hidden}
+.cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(59,125,237,.12),transparent 60%)}
+.cta-section h2{font-size:28px;font-weight:800;color:#fff;margin-bottom:14px;position:relative}
+.cta-section p{font-size:15px;color:rgba(255,255,255,.5);margin-bottom:32px;max-width:460px;margin-left:auto;margin-right:auto;line-height:1.65;position:relative}
+
+.service-item{display:flex;gap:28px;align-items:flex-start;background:#fff;border-radius:var(--radius-lg);padding:32px;border:1px solid var(--g200);flex-wrap:wrap;margin-bottom:20px;transition:all .25s;box-shadow:var(--shadow-sm)}
+.service-item:hover{box-shadow:var(--shadow-md);border-color:var(--accent);transform:translateX(4px)}
+.service-item .info{flex:1;min-width:250px}
+.service-item .info h3{font-size:20px;font-weight:700;color:var(--g800);margin:8px 0}
+.service-item .info p{font-size:14px;color:var(--g500);line-height:1.7;margin-bottom:14px}
+.feature-tags{display:flex;flex-wrap:wrap;gap:8px}
+.feature-tag{font-size:12px;font-weight:500;color:var(--blue);background:rgba(26,58,107,.05);padding:5px 12px;border-radius:8px;border:1px solid rgba(26,58,107,.08)}
+
+.group-card{border:1px solid var(--g200);border-radius:var(--radius-lg);padding:28px;background:#fff;transition:all .25s;box-shadow:var(--shadow-sm)}
+.group-card:hover{box-shadow:var(--shadow-md)}
+.group-card .head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.group-card .head .icon{font-size:28px}
+.group-card .name{font-size:17px;font-weight:700;color:var(--g800)}
+.group-card p{font-size:14px;color:var(--g500);line-height:1.6;margin-bottom:14px}
+.role-tags{display:flex;flex-wrap:wrap;gap:6px}
+.role-tag{font-size:12px;color:var(--g600);background:var(--g100);padding:5px 11px;border-radius:8px}
+
+.timeline-item{display:flex;gap:16px;align-items:flex-start;padding:18px 0;border-bottom:1px solid var(--g100)}
+.timeline-dot{width:12px;height:12px;border-radius:6px;margin-top:5px;flex-shrink:0;border:2px solid transparent}
+.timeline-dot.active{background:var(--green);border-color:rgba(16,185,129,.25);box-shadow:0 0 10px rgba(16,185,129,.3)}
+.timeline-dot.pending{background:var(--g300);border-color:var(--g200)}
+.timeline-info{flex:1}
+.timeline-period{font-size:12px;color:var(--g400);margin-bottom:3px;font-weight:500}
+.timeline-title{font-size:15px;font-weight:600;color:var(--g800)}
+
+.step-header{display:flex;align-items:center;gap:14px;margin-bottom:24px}
+.step-num{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-lt));display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:#fff;flex-shrink:0;box-shadow:0 3px 12px rgba(59,125,237,.25)}
+.step-title{font-size:19px;font-weight:700;color:var(--g800)}
+.step-sub{font-size:13px;color:var(--g500);margin-top:2px}
+.download-box{background:var(--g50);border-radius:var(--radius);padding:24px;border:1px solid var(--g100);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;transition:all .2s}
+.download-box:hover{border-color:var(--accent);background:var(--accent-bg)}
+.download-info{display:flex;align-items:center;gap:14px}
+.download-icon{width:52px;height:52px;border-radius:14px;background:var(--accent-bg);display:flex;align-items:center;justify-content:center}
+.form-group{margin-bottom:18px}
+.form-group label{font-size:13px;font-weight:600;color:var(--g700);display:block;margin-bottom:7px}
+.form-group label .req{color:var(--red)}
+.form-input{width:100%;padding:12px 16px;font-size:14px;border-radius:12px;border:1.5px solid var(--g200);outline:none;transition:all .2s;box-sizing:border-box;background:#fff}
+.form-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(59,125,237,.08)}
+textarea.form-input{resize:vertical;line-height:1.65}
+.group-select{display:flex;flex-wrap:wrap;gap:8px}
+.group-option{padding:10px 18px;font-size:13px;font-weight:500;border-radius:12px;border:1.5px solid var(--g200);background:#fff;color:var(--g600);transition:all .2s;cursor:pointer}
+.group-option:hover{border-color:var(--accent);color:var(--accent)}
+.group-option.selected{border-color:var(--accent);background:var(--accent-bg);color:var(--accent);font-weight:600}
+.info-box{background:var(--accent-bg);border-radius:var(--radius);padding:18px 20px;border:1px solid rgba(59,125,237,.1);font-size:13px;color:var(--g600);line-height:1.65;margin:20px 0}
+.faq-item{padding:16px 0;border-bottom:1px solid var(--g100)}
+.faq-item:last-child{border-bottom:none}
+.faq-q{font-size:14px;font-weight:600;color:var(--g800);margin-bottom:5px}
+.faq-a{font-size:13px;color:var(--g500);line-height:1.65}
+
+.track-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.track-header h2{font-size:20px;font-weight:700;color:var(--g800);white-space:nowrap}
+.track-line{flex:1;height:1px;background:var(--g200);margin-left:8px}
+.division-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:40px}
+.division-card{background:#fff;border-radius:var(--radius);padding:22px;border:1px solid var(--g200);transition:all .25s;box-shadow:var(--shadow-sm)}
+.division-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.division-card .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.division-card h4{font-size:16px;font-weight:700;color:var(--g800)}
+.division-card .count{font-size:13px;font-weight:600}
+.division-card .desc{font-size:13px;color:var(--g500);line-height:1.5;margin-bottom:10px}
+.division-card .members{font-size:12px;color:var(--g400)}
+.border-accent{border-left:4px solid var(--accent)}
+.border-green{border-left:4px solid var(--green)}
+.border-gold{border-left:4px solid var(--gold)}
+
+.notice-item{background:#fff;border-radius:var(--radius);padding:20px 24px;border:1px solid var(--g200);cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:16px;margin-bottom:10px;border-left:4px solid transparent;box-shadow:var(--shadow-sm)}
+.notice-item:hover{background:var(--accent-bg);transform:translateX(6px);box-shadow:var(--shadow-md);border-color:transparent;border-left-color:var(--accent)}
+.notice-item.pinned{border-left-color:var(--accent);border-color:rgba(59,125,237,.15);background:rgba(59,125,237,.02)}
+.notice-item .info{flex:1}
+.notice-item .tags{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.notice-item .title{font-size:15px;font-weight:600;color:var(--g800)}
+.notice-item .date{font-size:13px;color:var(--g400);flex-shrink:0;font-weight:500}
+.notice-detail{background:#fff;border-radius:var(--radius-lg);padding:40px;border:1px solid var(--g200);box-shadow:var(--shadow-sm)}
+.notice-detail .back{background:none;border:none;color:var(--accent);font-size:14px;font-weight:500;cursor:pointer;margin-bottom:24px;display:flex;align-items:center;gap:6px;padding:0;transition:gap .2s}
+.notice-detail .back:hover{gap:10px}
+.notice-detail h2{font-size:22px;font-weight:700;color:var(--g800);margin:12px 0 8px}
+.notice-detail .meta{font-size:13px;color:var(--g400);margin-bottom:24px}
+.notice-detail .body{font-size:14px;color:var(--g600);line-height:1.85;white-space:pre-wrap;border-top:1px solid var(--g100);padding-top:24px}
+
+.footer{background:var(--navy);border-top:1px solid rgba(255,255,255,.05);padding:52px 24px 32px}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:36px;margin-bottom:36px}
+.footer h4{font-size:16px;font-weight:700;color:#fff;margin-bottom:14px}
+.footer .info{font-size:13px;color:var(--g500);line-height:1.75}
+.footer .links-title{font-size:12px;font-weight:600;color:var(--g400);margin-bottom:12px;letter-spacing:.5px;text-transform:uppercase}
+.footer .link{font-size:13px;color:var(--g500);cursor:pointer;padding:5px 0;transition:all .2s;display:block}
+.footer .link:hover{color:var(--accent-lt);transform:translateX(4px)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.05);padding-top:20px;font-size:12px;color:var(--g600);text-align:center}
+
+.sent-state{text-align:center;padding:52px;background:rgba(16,185,129,.04);border-radius:var(--radius-lg);border:1px solid rgba(16,185,129,.12)}
+.sent-state .check{font-size:52px;margin-bottom:14px}
+.sent-state h3{font-size:20px;font-weight:700;color:var(--g800);margin-bottom:8px}
+.sent-state p{font-size:14px;color:var(--g500);line-height:1.6}
+
+.text-center{text-align:center}
+.mt-24{margin-top:24px}
+.mt-32{margin-top:32px}
+.white-box{background:#fff;border-radius:var(--radius-lg);padding:36px;border:1px solid var(--g200);margin-bottom:24px;box-shadow:var(--shadow-sm)}
+.hidden{display:none!important}
+
+/* ═══ MOBILE MENU ═══ */
+.mobile-toggle{display:none;background:none;border:none;color:#fff;padding:8px;border-radius:8px;transition:background .2s}
+.mobile-toggle:hover{background:rgba(255,255,255,.1)}
+.mobile-toggle svg{display:block}
+
+/* ═══ RESPONSIVE: TABLET ═══ */
+@media(max-width:1024px){
+  .hero-tagline{font-size:38px}
+  .hero h1{font-size:20px}
+  .hero-inner{gap:36px}
+  .cards-grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+  .services-grid{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+  .division-grid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+}
+
+/* ═══ RESPONSIVE: MOBILE ═══ */
+@media(max-width:768px){
+  /* Header & Nav */
+  .mobile-toggle{display:block}
+  nav{
+    display:none;position:fixed;top:64px;left:0;right:0;
+    background:rgba(11,26,47,.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+    flex-direction:column;padding:12px 16px 20px;gap:4px;
+    border-bottom:1px solid rgba(255,255,255,.08);
+    box-shadow:0 8px 32px rgba(0,0,0,.3);
+    z-index:999;
+  }
+  nav.open{display:flex}
+  nav button{text-align:left;padding:12px 16px;font-size:15px;border-radius:10px;width:100%}
+  nav button.active{background:rgba(59,125,237,.15)}
+
+  /* Hero */
+  .hero{padding-top:90px;padding-bottom:50px}
+  .hero-inner{gap:28px;flex-direction:column}
+  .hero-content{flex:1 1 auto}
+  .hero-tagline{font-size:30px;letter-spacing:-.8px}
+  .hero h1{font-size:17px}
+  .hero-desc{font-size:14px;margin-bottom:28px}
+  .hero-visual{width:100%;margin-right:0!important;flex:1 1 auto!important}
+  .hero-visual div[style*="border-radius"]{border-radius:16px!important;height:260px!important}
+  .hero-visual div[style*="border-radius"] div[style*="linear-gradient"]{background:linear-gradient(180deg,rgba(11,26,47,.7) 0%,transparent 40%)!important}
+  .hero-buttons{flex-direction:column;width:100%}
+  .hero-buttons .btn{width:100%;justify-content:center}
+
+  /* Stats */
+  .stats-bar{margin:-28px 12px 0;padding:20px 16px;gap:12px;border-radius:16px;flex-wrap:wrap;justify-content:center}
+  .stat-item{flex:1 1 40%;min-width:100px;text-align:center}
+  .stat-num{font-size:24px}
+  .stat-num small{font-size:13px}
+  .stat-label{font-size:12px}
+
+  /* Sections */
+  .section-title h2{font-size:22px}
+  .section-title p{font-size:14px}
+  .section-title{margin-bottom:32px}
+
+  /* Cards */
+  .cards-grid{grid-template-columns:1fr;gap:14px}
+  .card{padding:24px}
+  .card h3{font-size:17px}
+
+  /* Services */
+  .services-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .service-mini{padding:20px 14px}
+  .service-mini .icon{font-size:26px;margin-bottom:8px}
+  .service-mini h4{font-size:14px}
+  .service-mini p{font-size:12px}
+
+  /* Service Detail Page */
+  .service-item{flex-direction:column;padding:24px;gap:16px}
+  .service-item .img-placeholder{width:100%!important;height:160px!important}
+  .service-item .info h3{font-size:18px}
+  .feature-tags{gap:6px}
+  .feature-tag{font-size:11px;padding:4px 10px}
+
+  /* Page Banner */
+  .page-banner{padding:40px 16px 36px}
+  .page-banner h1{font-size:24px}
+  .page-banner p{font-size:13px}
+
+  /* CTA */
+  .cta-section{padding:48px 16px}
+  .cta-section h2{font-size:22px}
+  .cta-section p{font-size:14px;margin-bottom:24px}
+
+  /* Advisory Groups */
+  .group-card{padding:22px}
+  .group-card .name{font-size:16px}
+  .role-tags{gap:5px}
+
+  /* Timeline */
+  .timeline-item{padding:14px 0}
+  .timeline-title{font-size:14px}
+
+  /* Apply Form */
+  .white-box{padding:24px;margin-bottom:16px}
+  .white-box div[style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important}
+  .step-header{gap:12px;margin-bottom:20px}
+  .step-num{width:36px;height:36px;font-size:15px;border-radius:10px}
+  .step-title{font-size:17px}
+  .step-sub{font-size:12px}
+  .download-box{flex-direction:column;align-items:stretch;text-align:center;gap:14px}
+  .download-info{flex-direction:column;text-align:center;gap:10px}
+  .download-box .btn{width:100%;justify-content:center}
+  .group-select{gap:6px}
+  .group-option{padding:9px 14px;font-size:12px}
+  .info-box{font-size:12px;padding:14px 16px}
+  .form-input{padding:11px 14px;font-size:14px}
+
+  /* Divisions */
+  .division-grid{grid-template-columns:1fr;gap:10px}
+  .division-card{padding:18px}
+  .division-card h4{font-size:15px}
+  .track-header h2{font-size:18px}
+
+  /* Notices */
+  .notice-item{padding:16px;gap:10px;flex-direction:column;align-items:flex-start}
+  .notice-item .date{font-size:12px}
+  .notice-item .title{font-size:14px}
+  .notice-detail{padding:24px}
+  .notice-detail h2{font-size:19px}
+  .notice-detail .body{font-size:13px;line-height:1.75}
+
+  /* Footer */
+  .footer{padding:40px 16px 24px}
+  .footer-grid{grid-template-columns:1fr;gap:24px}
+  .footer h4{font-size:15px;margin-bottom:10px}
+
+  /* Image Placeholders */
+  .img-placeholder{border-radius:12px;height:auto;min-height:160px}
+
+  /* Buttons */
+  .btn{font-size:13px}
+  .btn-primary{padding:12px 24px}
+  .btn-secondary{padding:12px 20px}
+  .btn-ghost{padding:12px 20px}
+
+  /* Sent State */
+  .sent-state{padding:36px 20px}
+  .sent-state .check{font-size:40px}
+  .sent-state h3{font-size:18px}
+  .sent-state p{font-size:13px}
+
+  /* FAQ */
+  .faq-q{font-size:13px}
+  .faq-a{font-size:12px}
+
+  /* Container padding */
+  .container,.container-sm,.container-xs{padding:0 16px}
+}
+
+/* ═══ RESPONSIVE: SMALL MOBILE ═══ */
+@media(max-width:420px){
+  .hero-tagline{font-size:26px;letter-spacing:-.6px}
+  .hero h1{font-size:15px}
+  .hero-desc{font-size:13px}
+  .hero{padding-top:84px;padding-bottom:40px}
+  .stats-bar{padding:16px 12px;gap:10px}
+  .stat-item{flex:1 1 45%}
+  .stat-num{font-size:22px}
+  .section-title h2{font-size:20px}
+  .page-banner h1{font-size:21px}
+  .services-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .service-mini{padding:16px 10px}
+  .service-mini .icon{font-size:22px}
+  .service-mini h4{font-size:13px}
+  .service-mini p{font-size:11px}
+  .card{padding:20px}
+  .card h3{font-size:16px}
+  .card p{font-size:13px}
+  .white-box{padding:20px}
+  .group-option{padding:8px 12px;font-size:11px}
+  .cta-section h2{font-size:20px}
+  .notice-detail h2{font-size:17px}
+}
+</style>
+</head>
+<body>
+
+<header class="header" id="header">
+  <div class="container header-inner">
+    <div class="logo" onclick="navigate('home')">
+      <div style="font-size:16px;font-weight:700;color:#fff;letter-spacing:-.3px;display:flex;align-items:center;gap:6px"><span style="color:var(--accent-lt);font-weight:300;font-size:20px">「</span>모두의 경찰관<span style="font-weight:400;opacity:.5;margin:0 2px">·</span>소통광장<span style="color:var(--accent-lt);font-weight:300;font-size:20px">」</span></div>
+    </div>
+    <button class="mobile-toggle" id="mobile-toggle" onclick="toggleMobileNav()" aria-label="메뉴">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <nav id="nav">
+      <button data-page="home" class="active">홈</button>
+      <button data-page="about">모두의 경찰관 소개</button>
+      <button data-page="advisory">자문단 소개</button>
+      <button data-page="benefits">역할 및 혜택</button>
+      <button data-page="plaza">소통광장</button>
+    </nav>
+  </div>
+</header>
+
+<!-- HOME -->
+<div id="page-home" class="page">
+  <section class="hero">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="container hero-inner">
+      <div class="hero-content">
+        <div class="hero-tagline fade-up"><em>모두가 안전한 대한민국,</em><br>여기서 시작됩니다.</div>
+        <h1 class="fade-up-d1">「모두의 경찰관」 <span>소통광장</span></h1>
+        <p class="hero-desc fade-up-d2">국민·현장·전문가의 의견을 개발 과정에 즉각 반영·개선하는<br>'상시 소통 체계'를 구축하여,<br>실질적인 공감대를 형성하고 서비스 완성도를 높여갑니다.</p>
+        <div class="hero-buttons fade-up-d3">
+          <button class="btn btn-primary" onclick="navigate('advisory_apply')" style="padding:18px 44px;font-size:18px;border-radius:14px;box-shadow:0 6px 24px rgba(59,125,237,.4)">자문단 지원하기 →</button>
+          <button class="btn btn-ghost" onclick="navigate('benefits')">역할 및 혜택 보기</button>
+        </div>
+      </div>
+      <div class="hero-visual fade-up-d2" style="flex:1 1 560px;position:relative;margin-right:-24px">
+        <div style="position:relative;overflow:hidden;border-radius:20px 0 0 20px;height:440px">
+          <img src="hero-police.jpg" alt="대한민국 경찰" style="width:100%;height:100%;object-fit:cover;object-position:center center">
+          <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,26,47,1) 0%,rgba(11,26,47,.6) 20%,transparent 50%)"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section style="background:#fff;padding:0 24px;position:relative;z-index:2">
+    <div class="stats-bar fade-up-d4">
+      <div class="stat-item"><div class="stat-num">110<small>명</small></div><div class="stat-label">자문단 총원</div></div>
+      <div class="stat-item"><div class="stat-num">10<small>개</small></div><div class="stat-label">운영 분과</div></div>
+      <div class="stat-item"><div class="stat-num">120~160<small>억</small></div><div class="stat-label">사업 규모</div></div>
+      <div class="stat-item"><div class="stat-num">2<small>년</small></div><div class="stat-label">운영 기간</div></div>
+    </div>
+  </section>
+</div>
+
+<!-- SERVICE -->
+<div id="page-about" class="page hidden">
+  <div class="page-banner"><h1>모두의 경찰관 소개</h1><p>AI 민생 10대 프로젝트 | 국비 80억 + 기업 40~80억 | 2년간 개발·실증</p></div>
+  <section style="padding:48px 24px;background:var(--g50)"><div class="container-sm"><div class="img-placeholder" style="width:100%;height:300px"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>서비스 아키텍처 / 전체 구성도 이미지</span></div></div></section>
+  <section style="padding:48px 24px;background:#fff"><div class="container-sm" id="service-list"></div></section>
+</div>
+
+<!-- ADVISORY -->
+<div id="page-advisory" class="page hidden">
+  <div class="page-banner"><h1>자문단 소개</h1><p>국민·현장·전문가 3개 트랙, 총 110명으로 구성</p></div>
+
+  <!-- 자문단 구성 (분과 안내 통합) -->
+  <section style="padding:48px 24px;background:#fff">
+    <div class="container-sm">
+      <div class="section-title"><div class="label">Organization</div><h2>자문단 구성</h2><p>전문가·국민·현장 3개 트랙, 총 10개 분과</p></div>
+      <div class="cards-grid" id="advisory-groups"></div>
+    </div>
+  </section>
+  <section style="padding:0 24px 48px;background:#fff">
+    <div class="container-sm" id="divisions-content"></div>
+  </section>
+
+  <!-- 운영 일정 -->
+  <section style="padding:48px 24px;background:#fff">
+    <div style="max-width:700px;margin:0 auto;padding:0 24px">
+      <div class="section-title"><div class="label">Timeline</div><h2>운영 일정</h2></div>
+      <div id="timeline"></div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section style="padding:48px 24px;background:var(--g50);text-align:center">
+    <h3 style="font-size:22px;font-weight:700;color:var(--g800);margin-bottom:12px">자문단에 참여하시겠습니까?</h3>
+    <p style="font-size:14px;color:var(--g500);margin-bottom:24px">온라인으로 지원서를 작성하고 바로 제출하세요.</p>
+    <button class="btn btn-primary" onclick="navigate('advisory_apply')">자문단 지원하기 →</button>
+  </section>
+</div>
+
+<!-- BENEFITS -->
+<div id="page-benefits" class="page hidden">
+  <div class="page-banner"><h1>자문단 역할 및 혜택</h1><p>분야별 역할과 우수 활동자 혜택 안내</p></div>
+
+  <!-- 역할 -->
+  <section style="padding:48px 24px;background:#fff">
+    <div class="container-sm">
+      <div class="section-title"><div class="label">Roles</div><h2>트랙별 역할</h2><p>분야별 주요 서비스와 연계된 역할을 수행합니다</p></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px">
+        <div style="background:var(--g50);border-radius:16px;padding:28px;border:1px solid var(--g200);border-top:4px solid var(--gold)">
+          <div style="font-size:28px;margin-bottom:12px">🧠</div>
+          <h4 style="font-size:17px;font-weight:700;color:var(--g800);margin-bottom:4px">전문가 자문단 <span style="font-size:13px;color:var(--gold);font-weight:600">10명</span></h4>
+          <p style="font-size:14px;color:var(--g500);line-height:1.7;margin-top:8px">AI 모델의 기술적 검증 및 평가를 수행하고, AI 윤리성·안전성을 검증합니다. 개발 중 솔루션 내 기능에 필수적으로 의견을 반영합니다.</p>
+          <div style="margin-top:14px;display:flex;flex-wrap:wrap;gap:6px">
+            <span class="tag tag-gold">AI 모델 검증</span><span class="tag tag-gold">윤리성 평가</span><span class="tag tag-gold">안전성 검증</span>
+          </div>
+        </div>
+        <div style="background:var(--g50);border-radius:16px;padding:28px;border:1px solid var(--g200);border-top:4px solid var(--accent)">
+          <div style="font-size:28px;margin-bottom:12px">👥</div>
+          <h4 style="font-size:17px;font-weight:700;color:var(--g800);margin-bottom:4px">국민 자문단 <span style="font-size:13px;color:var(--accent);font-weight:600">50명</span></h4>
+          <p style="font-size:14px;color:var(--g500);line-height:1.7;margin-top:8px">답변 우회 시도 및 취약점 발굴, AI 기반 민원 처리 비교·평가, 실생활 시나리오 기반 사용성 평가, AI 홍보 콘텐츠 기획 및 아이디어 발굴을 수행합니다.</p>
+          <div style="margin-top:14px;display:flex;flex-wrap:wrap;gap:6px">
+            <span class="tag tag-accent">취약점 발굴</span><span class="tag tag-accent">사용성 평가</span><span class="tag tag-accent">민원 비교평가</span><span class="tag tag-accent">홍보 기획</span>
+          </div>
+        </div>
+        <div style="background:var(--g50);border-radius:16px;padding:28px;border:1px solid var(--g200);border-top:4px solid var(--green)">
+          <div style="font-size:28px;margin-bottom:12px">🚔</div>
+          <h4 style="font-size:17px;font-weight:700;color:var(--g800);margin-bottom:4px">현장 자문단 <span style="font-size:13px;color:var(--green);font-weight:600">50명</span></h4>
+          <p style="font-size:14px;color:var(--g500);line-height:1.7;margin-top:8px">182 상담 AI 어드바이저, 폴리폰 어시스턴트, 공익신고 판독, 유실물 매칭, AI 민원 답변 등 실무 현장에서 서비스 사용성을 직접 평가합니다.</p>
+          <div style="margin-top:14px;display:flex;flex-wrap:wrap;gap:6px">
+            <span class="tag tag-green">182 상담 평가</span><span class="tag tag-green">폴리폰 평가</span><span class="tag tag-green">공익신고 판독</span><span class="tag tag-green">유실물 매칭</span>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:20px;padding:18px;background:var(--g50);border-radius:14px;border:1px solid var(--g200)">
+        <span style="font-size:14px;color:var(--g600)">📌 <strong>공통 역할:</strong> 자문단 전원(110명)이 신규 서비스 수요를 상시 발굴합니다</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 혜택 -->
+  <section style="padding:48px 24px;background:var(--g50)">
+    <div class="container-sm">
+      <div class="section-title"><div class="label">Benefits</div><h2>자문단 혜택</h2><p>우수 활동자에게 다양한 인센티브를 제공합니다</p></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px">
+        <div style="background:#fff;border-radius:16px;padding:28px;text-align:center;border:1px solid var(--g200)">
+          <div style="font-size:36px;margin-bottom:10px">💰</div>
+          <h4 style="font-size:16px;font-weight:700;color:var(--g800);margin-bottom:6px">활동비 지급</h4>
+          <p style="font-size:13px;color:var(--g500);line-height:1.5">자문 활동에 대한 소정의 활동비를 지급합니다</p>
+        </div>
+        <div style="background:#fff;border-radius:16px;padding:28px;text-align:center;border:1px solid var(--g200)">
+          <div style="font-size:36px;margin-bottom:10px">🎁</div>
+          <h4 style="font-size:16px;font-weight:700;color:var(--g800);margin-bottom:6px">경품 증정</h4>
+          <p style="font-size:13px;color:var(--g500);line-height:1.5">우수 활동자를 대상으로 경품을 증정합니다</p>
+        </div>
+        <div style="background:#fff;border-radius:16px;padding:28px;text-align:center;border:1px solid var(--g200)">
+          <div style="font-size:36px;margin-bottom:10px">🏅</div>
+          <h4 style="font-size:16px;font-weight:700;color:var(--g800);margin-bottom:6px">장려장 수여</h4>
+          <p style="font-size:13px;color:var(--g500);line-height:1.5">우수 활동자에게 경찰청 장려장을 수여합니다</p>
+        </div>
+        <div style="background:#fff;border-radius:16px;padding:28px;text-align:center;border:1px solid var(--g200)">
+          <div style="font-size:36px;margin-bottom:10px">📝</div>
+          <h4 style="font-size:16px;font-weight:700;color:var(--g800);margin-bottom:6px">전문가 자문료</h4>
+          <p style="font-size:13px;color:var(--g500);line-height:1.5">전문가 자문단에게 별도 자문료를 지급합니다</p>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:20px;font-size:12px;color:var(--g400)">※ 활동비·자문료 등 경비는 선정업체와 협의 후 예산 집행</div>
+    </div>
+  </section>
+
+  <!-- 활동 방식 -->
+  <section style="padding:48px 24px;background:#fff">
+    <div class="container-sm">
+      <div class="section-title"><div class="label">Activities</div><h2>주요 활동</h2></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:600px;margin:0 auto">
+        <div style="background:var(--g50);border-radius:16px;padding:24px;text-align:center;border:1px solid var(--g200)">
+          <div style="font-size:32px;margin-bottom:10px">🌐</div>
+          <h4 style="font-size:15px;font-weight:700;color:var(--g800);margin-bottom:6px">온라인 상시 소통</h4>
+          <p style="font-size:13px;color:var(--g500);line-height:1.5">소통광장·카카오 채팅방 등<br>온라인 창구 기반 상시 소통</p>
+        </div>
+        <div style="background:var(--g50);border-radius:16px;padding:24px;text-align:center;border:1px solid var(--g200)">
+          <div style="font-size:32px;margin-bottom:10px">🤝</div>
+          <h4 style="font-size:15px;font-weight:700;color:var(--g800);margin-bottom:6px">정기 워크숍</h4>
+          <p style="font-size:13px;color:var(--g500);line-height:1.5">연 2회 이상 워크숍 개최<br>서비스 시연·개선사항 논의</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section style="padding:48px 24px;background:var(--g50);text-align:center">
+    <h3 style="font-size:22px;font-weight:700;color:var(--g800);margin-bottom:12px">자문단에 참여하시겠습니까?</h3>
+    <p style="font-size:14px;color:var(--g500);margin-bottom:24px">온라인으로 지원서를 작성하고 바로 제출하세요.</p>
+    <button class="btn btn-primary" onclick="navigate('advisory_apply')">자문단 지원하기 →</button>
+  </section>
+</div>
+
+<!-- ADVISORY APPLY -->
+<div id="page-advisory_apply" class="page hidden">
+  <div class="page-banner"><h1>자문단 지원하기</h1><p>온라인으로 작성하고 바로 제출하세요</p></div>
+  <section style="padding:48px 24px;background:var(--g50)">
+    <div class="container-xs">
+
+      <div class="white-box">
+        <div class="step-header">
+          <div class="step-num">📋</div>
+          <div><div class="step-title">자문단 지원서</div><div class="step-sub">모든 항목을 작성한 후 하단의 제출 버튼을 눌러주세요</div></div>
+        </div>
+
+        <div id="apply-form">
+          <!-- 1. 인적사항 -->
+          <div style="margin-bottom:28px">
+            <h4 style="font-size:16px;font-weight:700;color:var(--g800);margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid var(--accent)">1. 인적사항</h4>
+            <div class="form-group"><label>성명 <span class="req">*</span></label><input type="text" class="form-input" id="f-name" placeholder="홍길동"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div class="form-group"><label>연락처 <span class="req">*</span></label><input type="text" class="form-input" id="f-phone" placeholder="010-0000-0000"></div>
+              <div class="form-group"><label>이메일 <span class="req">*</span></label><input type="email" class="form-input" id="f-email" placeholder="example@email.com"></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div class="form-group"><label>소속기관 / 학교</label><input type="text" class="form-input" id="f-org" placeholder="소속기관 또는 학교명"></div>
+              <div class="form-group"><label>직위 / 학년</label><input type="text" class="form-input" id="f-position" placeholder="직위 또는 학년"></div>
+            </div>
+          </div>
+
+          <!-- 2. 지원 분야 -->
+          <div style="margin-bottom:28px">
+            <h4 style="font-size:16px;font-weight:700;color:var(--g800);margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid var(--accent)">2. 지원 분야 <span style="font-size:12px;color:var(--red);font-weight:500">* 필수</span></h4>
+            <div class="group-select" id="group-select">
+              <div style="width:100%;font-size:12px;font-weight:600;color:var(--g400);margin-bottom:4px">🧠 전문가 트랙</div>
+              <button class="group-option" data-val="전문가 - 검증 분과">검증 분과 (AI 개발자·연구원·교수)</button>
+              <div style="width:100%;font-size:12px;font-weight:600;color:var(--g400);margin:8px 0 4px">👥 국민 트랙</div>
+              <button class="group-option" data-val="국민 - 연구 분과">연구 분과 (AI 유관 전공자)</button>
+              <button class="group-option" data-val="국민 - 민원 분과">민원 분과 (치안협력단체·민원 경험자)</button>
+              <button class="group-option" data-val="국민 - 일반 분과">일반 분과 (全 국민·대학생·디지털취약계층)</button>
+              <button class="group-option" data-val="국민 - 홍보 분과">홍보 분과 (공공기관·대학생 기자단)</button>
+              <div style="width:100%;font-size:12px;font-weight:600;color:var(--g400);margin:8px 0 4px">🚔 현장 트랙</div>
+              <button class="group-option" data-val="현장 - 182 분과">182 분과 (콜센터 상담원)</button>
+              <button class="group-option" data-val="현장 - 지역경찰 분과">지역경찰 분과 (지역경찰 근무자)</button>
+              <button class="group-option" data-val="현장 - 교통민원 분과">교통민원 분과 (교통민원 담당자)</button>
+              <button class="group-option" data-val="현장 - 유실물 분과">유실물 분과 (유실물 담당자)</button>
+              <button class="group-option" data-val="현장 - 민원 분과">민원 분과 (민원 업무 담당자)</button>
+            </div>
+          </div>
+
+          <!-- 3. 지원 동기 -->
+          <div style="margin-bottom:28px">
+            <h4 style="font-size:16px;font-weight:700;color:var(--g800);margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid var(--accent)">3. 지원 동기</h4>
+            <div class="form-group"><textarea class="form-input" id="f-motive" rows="4" placeholder="자문단 지원 동기를 작성해 주세요"></textarea></div>
+          </div>
+
+          <!-- 4. 관련 경력 -->
+          <div style="margin-bottom:28px">
+            <h4 style="font-size:16px;font-weight:700;color:var(--g800);margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid var(--accent)">4. 관련 경력 및 전문성</h4>
+            <div class="form-group"><textarea class="form-input" id="f-career" rows="4" placeholder="관련 경력, 자격사항, 전문 분야 등을 작성해 주세요"></textarea></div>
+          </div>
+
+          <!-- 5. 활동 가능 기간 -->
+          <div style="margin-bottom:28px">
+            <h4 style="font-size:16px;font-weight:700;color:var(--g800);margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid var(--accent)">5. 활동 가능 기간</h4>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div class="form-group"><label>시작 가능일</label><input type="text" class="form-input" id="f-startdate" placeholder="예: 2026년 4월"></div>
+              <div class="form-group"><label>활동 가능 요일</label><input type="text" class="form-input" id="f-days" placeholder="예: 평일 전체 / 월·수·금"></div>
+            </div>
+            <div class="form-group"><label>비고</label><input type="text" class="form-input" id="f-note" placeholder="기타 참고사항"></div>
+          </div>
+
+          <!-- 6. 개인정보 동의 -->
+          <div style="margin-bottom:28px">
+            <h4 style="font-size:16px;font-weight:700;color:var(--g800);margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid var(--accent)">6. 개인정보 수집·이용 동의 <span style="font-size:12px;color:var(--red);font-weight:500">* 필수</span></h4>
+            <div style="background:var(--g50);border-radius:12px;padding:18px;border:1px solid var(--g100);font-size:13px;color:var(--g600);line-height:1.7;margin-bottom:14px">
+              경찰청은 자문단 운영을 위해 성명, 연락처, 이메일, 소속 정보를 수집하며, 사업 종료 후 3개월 이내 파기합니다. 수집된 정보는 자문단 운영 목적 이외에 사용되지 않습니다.
+            </div>
+            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;font-weight:600;color:var(--g800)">
+              <input type="checkbox" id="f-agree" style="width:20px;height:20px;accent-color:var(--accent);cursor:pointer">
+              개인정보 수집·이용에 동의합니다
+            </label>
+          </div>
+
+          <!-- Submit -->
+          <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:8px;flex-wrap:wrap">
+            <button class="btn btn-primary" id="submit-btn" onclick="submitForm()" disabled style="padding:14px 36px;font-size:15px">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg>
+              지원서 제출하기
+            </button>
+          </div>
+        </div>
+
+        <div id="apply-sent" class="sent-state hidden">
+          <div class="check">✅</div>
+          <h3>지원서가 정상적으로 전송되었습니다</h3>
+          <p>이메일 클라이언트를 통해 지원서가 발송됩니다.<br>발송 화면에서 <strong>보내기</strong>를 눌러 최종 제출해 주세요.<br><br>접수 확인은 추후 이메일로 안내드립니다.</p>
+          <div class="mt-24">
+            <button class="btn btn-secondary" onclick="resetForm()">새로 작성하기</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="white-box">
+        <h3 style="font-size:18px;font-weight:700;color:var(--g800);margin-bottom:16px">자주 묻는 질문</h3>
+        <div class="faq-item"><div class="faq-q">Q. 자문단 활동 기간은 어떻게 되나요?</div><div class="faq-a">A. 2026년 3월부터 2027년 12월 31일 사업 종료 시까지 운영됩니다.</div></div>
+        <div class="faq-item"><div class="faq-q">Q. 자문단 활동에 대한 보상이 있나요?</div><div class="faq-a">A. 우수 활동자에게 활동비, 경품, 장려장 등이 제공되며, 전문가에게는 자문료가 별도 지급됩니다. (선정업체와 협의 후 예산 집행)</div></div>
+        <div class="faq-item"><div class="faq-q">Q. 복수 분야에 지원할 수 있나요?</div><div class="faq-a">A. 1인 1개 자문단 지원을 원칙으로 합니다. 분과별 세부 구성 및 선발 인원은 지원 현황에 따라 변동될 수 있습니다.</div></div>
+        <div class="faq-item"><div class="faq-q">Q. 주요 활동은 어떻게 이루어지나요?</div><div class="faq-a">A. 소통광장·카카오 채팅방 등 온라인 창구 기반 상시 소통과, 정기 워크숍(연 2회 이상) 등 오프라인 활동이 병행됩니다.</div></div>
+      </div>
+
+    </div>
+  </section>
+</div>
+<!-- PLAZA LANDING -->
+<div id="page-plaza" class="page hidden">
+  <div class="page-banner"><h1>소통광장</h1><p>모두의 경찰관 자문단 소통 공간</p></div>
+  <section style="padding:48px 24px;background:var(--g50)">
+    <div class="container-sm">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px">
+        <div class="card" onclick="navigate('plaza_notice')"><div class="card-top"><span class="card-icon">📢</span><span class="tag tag-accent">관리자</span></div><h3>공지사항</h3><p>자문단 운영 및 활동 공지</p></div>
+        <div class="card" onclick="navigate('plaza_press')"><div class="card-top"><span class="card-icon">📰</span><span class="tag tag-accent">관리자</span></div><h3>보도자료</h3><p>언론 보도 및 홍보 자료</p></div>
+        <div class="card" onclick="navigate('plaza_media')"><div class="card-top"><span class="card-icon">🎬</span><span class="tag tag-accent">관리자</span></div><h3>사진 및 동영상</h3><p>활동 사진·영상 자료</p></div>
+        <div class="card" onclick="navigate('plaza_survey')"><div class="card-top"><span class="card-icon">📊</span><span class="tag tag-gold">댓글 자유</span></div><h3>설문조사</h3><p>관리자가 설문을 올리고 누구나 답변</p></div>
+        <div class="card" onclick="navigate('plaza_board')"><div class="card-top"><span class="card-icon">💬</span><span class="tag tag-green">자유</span></div><h3>소통게시판</h3><p>누구나 자유롭게 의견을 나눕니다</p></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- BOARD TEMPLATE (5 boards) -->
+<div id="page-plaza_notice" class="page hidden">
+  <div class="page-banner"><h1>공지사항</h1><p>자문단 운영 및 활동 공지</p></div>
+  <section style="padding:48px 24px;background:var(--g50);min-height:400px"><div class="container-xs">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+      <button class="btn btn-secondary" onclick="navigate('plaza')" style="font-size:13px;padding:10px 20px">← 소통광장</button>
+      <button class="btn btn-secondary" onclick="openBoardWrite('notice')" style="font-size:13px;padding:10px 20px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg> 글쓰기</button>
+    </div>
+    <div id="bw-notice" class="white-box hidden" style="margin-bottom:20px"></div>
+    <div id="bl-notice"></div><div id="bd-notice" class="hidden"></div>
+  </div></section>
+</div>
+
+<div id="page-plaza_press" class="page hidden">
+  <div class="page-banner"><h1>보도자료</h1><p>언론 보도 및 홍보 자료</p></div>
+  <section style="padding:48px 24px;background:var(--g50);min-height:400px"><div class="container-xs">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+      <button class="btn btn-secondary" onclick="navigate('plaza')" style="font-size:13px;padding:10px 20px">← 소통광장</button>
+      <button class="btn btn-secondary" onclick="openBoardWrite('press')" style="font-size:13px;padding:10px 20px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg> 글쓰기</button>
+    </div>
+    <div id="bw-press" class="white-box hidden" style="margin-bottom:20px"></div>
+    <div id="bl-press"></div><div id="bd-press" class="hidden"></div>
+  </div></section>
+</div>
+
+<div id="page-plaza_media" class="page hidden">
+  <div class="page-banner"><h1>사진 및 동영상</h1><p>활동 사진·영상 자료</p></div>
+  <section style="padding:48px 24px;background:var(--g50);min-height:400px"><div class="container-xs">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+      <button class="btn btn-secondary" onclick="navigate('plaza')" style="font-size:13px;padding:10px 20px">← 소통광장</button>
+      <button class="btn btn-secondary" onclick="openBoardWrite('media')" style="font-size:13px;padding:10px 20px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg> 글쓰기</button>
+    </div>
+    <div id="bw-media" class="white-box hidden" style="margin-bottom:20px"></div>
+    <div id="bl-media"></div><div id="bd-media" class="hidden"></div>
+  </div></section>
+</div>
+
+<div id="page-plaza_survey" class="page hidden">
+  <div class="page-banner"><h1>설문조사</h1><p>자문단 설문 및 의견 수렴</p></div>
+  <section style="padding:48px 24px;background:var(--g50);min-height:400px"><div class="container-xs">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+      <button class="btn btn-secondary" onclick="navigate('plaza')" style="font-size:13px;padding:10px 20px">← 소통광장</button>
+      <button class="btn btn-secondary" onclick="openBoardWrite('survey')" style="font-size:13px;padding:10px 20px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg> 글쓰기</button>
+    </div>
+    <div id="bw-survey" class="white-box hidden" style="margin-bottom:20px"></div>
+    <div id="bl-survey"></div><div id="bd-survey" class="hidden"></div>
+  </div></section>
+</div>
+
+<div id="page-plaza_board" class="page hidden">
+  <div class="page-banner"><h1>소통게시판</h1><p>누구나 자유롭게 의견을 나눕니다</p></div>
+  <section style="padding:48px 24px;background:var(--g50);min-height:400px"><div class="container-xs">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+      <button class="btn btn-secondary" onclick="navigate('plaza')" style="font-size:13px;padding:10px 20px">← 소통광장</button>
+      <button class="btn btn-secondary" onclick="openBoardWrite('board')" style="font-size:13px;padding:10px 20px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg> 글쓰기</button>
+    </div>
+    <div id="bw-board" class="white-box hidden" style="margin-bottom:20px"></div>
+    <div id="bl-board"></div><div id="bd-board" class="hidden"></div>
+  </div></section>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer" style="padding:32px 24px 20px">
+  <div class="container" style="max-width:800px">
+    <div style="text-align:center;margin-bottom:16px">
+      <span class="link" onclick="navigate('about')" style="display:inline;padding:0 12px;font-size:13px">모두의 경찰관 소개</span>
+      <span class="link" onclick="navigate('advisory')" style="display:inline;padding:0 12px;font-size:13px">자문단 소개</span>
+      <span class="link" onclick="navigate('benefits')" style="display:inline;padding:0 12px;font-size:13px">역할 및 혜택</span>
+      <span class="link" onclick="navigate('plaza')" style="display:inline;padding:0 12px;font-size:13px">소통광장</span>
+    </div>
+    <div class="footer-bottom" style="font-size:12px;color:var(--g600);border-top:1px solid rgba(255,255,255,.05);padding-top:16px">
+      경찰청 미래치안정책국 치안인공지능정책과 · 서울 서대문구 통일로 97<br>
+      © 2026 경찰청 치안인공지능정책과. All Rights Reserved.
+    </div>
+  </div>
+</footer>
+
+<script src="./config.js"></script>
+<script>
+const SUBMIT_EMAIL='1coziness@police.go.kr';
+const API_BASE_URL=(window.APP_CONFIG&&window.APP_CONFIG.API_BASE_URL)||'http://127.0.0.1:8000';
+let currentPage='home',selectedGroup='';
+
+const services=[
+  {icon:'💬',name:'경찰민원24 AI 챗봇',tag:'대국민',desc:'경찰민원24 홈서비스에 탑재되는 AI 챗봇으로, 단순 문의사항 즉시 답변, 민원 접수창구 안내, 민원서식 작성 지원 등 원스톱 민원 해결 경험을 제공합니다. 자율방범대·경비업 종사자 대상 관계법령 질의 답변도 지원합니다.',features:['즉시답변','접수창구 안내','민원서식 작성 지원','법령·절차 안내']},
+  {icon:'📦',name:'분실물 탐색 지원',tag:'대국민',desc:'분실물 사진을 업로드하면 멀티모달 AI가 습득물 DB에서 일치 가능성이 높은 물품을 유사도 점수와 함께 제시합니다. 유사 물품 등록 시 자동 알림 기능도 제공합니다.',features:['이미지 기반 매칭','유사도 점수 제시','자동 알림','습득물 DB 연계']},
+  {icon:'🔍',name:'공익신고 접수 지원',tag:'대국민',desc:'민원인이 첨부한 이미지와 텍스트를 AI가 분석하여 법규 위반 가능성을 예측하고, 정식 접수에 필요한 관련 법률조항·판례를 식별하여 기초적인 법률 분석 결과를 제공합니다.',features:['이미지·텍스트 분석','법규 위반 가능성 예측','관련 법률조항 식별','접수 지원']},
+  {icon:'📞',name:'182 상담 어드바이저',tag:'대국민·내부',desc:'182콜센터 시스템에 탑재되는 AI 챗봇으로, 보이는 ARS 및 상담원 화면에서 음성 민원을 STT로 변환한 뒤 매뉴얼·법령·처리가이드를 실시간 추천하여 상담 품질을 향상합니다.',features:['음성→텍스트 변환(STT)','실시간 매뉴얼 추천','상담원 어드바이저','1차 자동 응대']},
+  {icon:'🛡️',name:'경찰관 AI 어시스턴트',tag:'내부',desc:'경찰 내부망 폴넷 및 폴리폰에서 법령·판례·매뉴얼을 통합 검색·추론하는 대화형 AI입니다. 교통 위반 이미지 분석, 민원 답변 초안 자동 작성, 유사 민원 일괄 처리 등 실무를 지원합니다.',features:['법령·판례·매뉴얼 검색','교통민원 처리 지원','답변 초안 자동 작성','현장경찰 업무 지원']},
+];
+const advisoryGroups=[
+  {icon:'👥',name:'국민 자문단',count:'50명',color:'var(--accent)',roles:['일반 국민','대학생(AI 관련 학과)','치안협력단체(자율방범대 등)'],desc:'실생활·시나리오 기반 사용성 평가, 취약점 발굴, AI 홍보 콘텐츠 기획 등 시민 관점에서 서비스를 검증합니다.'},
+  {icon:'🚔',name:'현장 자문단',count:'50명',color:'var(--green)',roles:['182콜센터 상담원','지역경찰 근무자','교통·유실물·민원 담당자'],desc:'상담 AI 어드바이저, 폴리폰 어시스턴트, 공익신고 판독, 유실물 매칭 등 실무 현장에서 AI 서비스를 평가합니다.'},
+  {icon:'🧠',name:'전문가 자문단',count:'10명',color:'var(--gold)',roles:['AI 개발자','정부 출연연·기업 연구원','대학교수'],desc:'AI 모델 검증 및 평가, AI 윤리성·안전성 검증을 수행합니다.'},
+];
+const timelineData=[
+  {period:'2026. 03 ~ 04',title:'외부자문단 모집공고 (국민·현장·전문가)',active:true},
+  {period:'2026. 04 초',title:'사업자 최종 선정 (NIPA 주관 서면·발표 평가)',active:false},
+  {period:'2026. 05',title:'사업자 선정 및 대국민 착수보고회 개최',active:false},
+  {period:'2026. 05 ~ 12',title:'1차년도: 데이터 구축, 모델 초기 학습, 시범 적용',active:false},
+  {period:'2027. 01 ~ 12',title:'2차년도: 전 기능 실증, 성능 고도화, 전면 적용',active:false},
+  {period:'2027. 12. 31.',title:'사업 종료 및 결과 보고',active:false},
+];
+const divisions=[
+  {track:'전문가 트랙',icon:'🧠',color:'gold',border:'border-gold',groups:[{name:'검증 분과',count:'10명',desc:'AI 모델 검증 및 평가 / AI 윤리성·안전성 검증',members:'AI 개발자, 정부 출연연·기업 연구원, 대학교수'}]},
+  {track:'국민 트랙',icon:'👥',color:'accent',border:'border-accent',groups:[
+    {name:'연구 분과',count:'10명',desc:'답변 우회 시도 / 취약점 발굴 등',members:'AI 유관 전공자 (대학생·대학원생 등)'},
+    {name:'민원 분과',count:'10명',desc:'AI 기반 민원 처리 과정 비교·평가',members:'경찰 민원 수요층 (치안협력단체, 민원 경험자)'},
+    {name:'일반 분과',count:'20명',desc:'실생활 / 시나리오 기반 사용성 평가',members:'全 국민 (대학생, 디지털취약계층 등)'},
+    {name:'홍보 분과',count:'10명',desc:'AI 홍보 콘텐츠 기획 및 제작 아이디어 발굴',members:'全 국민 (공공기관·대학생 기자단 등)'},
+  ]},
+  {track:'현장 트랙',icon:'🚔',color:'green',border:'border-green',groups:[
+    {name:'182 분과',count:'10명',desc:'상담 AI 어드바이저 사용성 평가',members:'182콜센터 상담원'},
+    {name:'지역경찰 분과',count:'10명',desc:'폴리폰 탑재 어시스턴트 평가',members:'지역경찰 근무자'},
+    {name:'교통민원 분과',count:'10명',desc:'공익신고 판독 서비스 평가',members:'교통민원 업무 담당자'},
+    {name:'유실물 분과',count:'10명',desc:'유실물 매칭 서비스 평가',members:'유실물 업무 담당자'},
+    {name:'민원 분과',count:'10명',desc:'AI 작성 민원 답변 평가',members:'민원 업무 담당자 (국민신문고 등)'},
+  ]},
+];
+var ADMIN_PW='3150';
+var BOARDS={
+  notice:{name:'공지사항',admin:true,defaults:[
+    {id:1,date:'2026.03.18',cat:'모집',pinned:true,title:'「모두의 경찰관」 국민·현장 자문단 모집 공고',body:'경찰청 미래치안정책국 치안인공지능정책과에서는 「모두의 경찰관」 사업의 자문단을 다음과 같이 모집합니다.\n\n모집 기간: 2026년 3월 ~ 4월\n모집 인원: 총 110명\n  - 국민 자문단 50명 (연구·민원·일반·홍보)\n  - 현장 자문단 50명 (182·지역경찰·교통민원·유실물·민원)\n  - 전문가 자문단 10명 (검증)\n\n운영 기간: 2026. 3월 ~ 2027. 12. 31.(사업 종료)\n\n우수 활동자 혜택: 활동비, 경품, 장려장 등\n전문가 대상 자문료 별도 지급'},
+    {id:2,date:'2026.03.15',cat:'안내',pinned:false,title:'AI 민생 10대 프로젝트 선정 안내',body:'「모두의 경찰관」이 정부 부처 68개 과제의 경합 끝에 AI 민생 10대 프로젝트에 선정되었습니다.\n\n총 100억 원 규모의 2년간 중형 프로젝트로, 10대 프로젝트 중 단 4건만 중형으로 선정된 핵심 과제입니다.\n\n📰 관련 뉴스 보기:\nhttps://m.ddaily.co.kr/page/view/2025112415513320736'},
+    {id:3,date:'2026.03.10',cat:'안내',pinned:false,title:'소통광장 오픈 안내',body:'「모두의 경찰관」 소통광장이 오픈되었습니다.\n\n본 플랫폼은 자문단 모집, 분과 운영, 공지사항 등을 통합 관리하는 온라인 소통 채널입니다.\n많은 관심과 참여를 부탁드립니다.'},
+    {id:4,date:'2026.04(예정)',cat:'일정',pinned:false,title:'사업자 최종 선정 (NIPA 주관)',body:'현재 총 4개 컨소시엄이 지원하여 심사 중입니다.\n최종 사업자 선정은 NIPA(정보통신산업진흥원) 주관, 서면·발표 평가를 통해 확정됩니다. (4월 초 예정)'},
+    {id:5,date:'2026.05(예정)',cat:'일정',pinned:false,title:'대국민 착수보고회 개최 예정',body:'사업자 선정 및 외부자문단 구성 후 대국민 착수보고회를 2026년 5월 중 개최할 예정입니다.\n정기 워크숍도 연 2회 이상 개최할 계획입니다.'},
+  ]},
+  press:{name:'보도자료',admin:true,defaults:[]},
+  media:{name:'사진 및 동영상',admin:true,defaults:[]},
+  survey:{name:'설문조사',admin:true,defaults:[]},
+  board:{name:'소통게시판',admin:false,defaults:[]},
+};
+function catCls(c){return c==='모집'?'tag-green':c==='일정'?'tag-gold':'tag-accent';}
+function linkify(t){return t.replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" rel="noopener" style="color:var(--accent);font-weight:600;word-break:break-all">$1 ↗</a>');}
+function bKey(b){return 'board_'+b;}
+function bGet(b){try{var s=localStorage.getItem(bKey(b));return s?JSON.parse(s):[];}catch(e){return[];}}
+function bSet(b,a){try{localStorage.setItem(bKey(b),JSON.stringify(a));}catch(e){}}
+function bAll(b){return bGet(b).concat(BOARDS[b].defaults||[]);}
+function dateStr(){var n=new Date();return n.getFullYear()+'.'+(''+(n.getMonth()+1)).padStart(2,'0')+'.'+(''+n.getDate()).padStart(2,'0');}
+
+function openBoardWrite(b,editId){
+  var w=document.getElementById('bw-'+b);
+  var isAdmin=BOARDS[b].admin;
+  var isEdit=!!editId;
+  var post=null;
+  if(isEdit){post=bAll(b).find(function(x){return x.id===editId;});}
+  w.innerHTML='<h3 style="font-size:17px;font-weight:700;color:var(--g800);margin-bottom:16px">'+BOARDS[b].name+(isEdit?' 수정':' 글쓰기')+'</h3>'+
+    (isAdmin?'<div class="form-group"><label>관리자 비밀번호 <span class="req">*</span></label><input type="password" class="form-input" id="bpw-'+b+'" placeholder="비밀번호 4자리"></div>':
+    '<div class="form-group"><label>작성자</label><input type="text" class="form-input" id="bau-'+b+'" placeholder="이름 또는 닉네임" value="'+(post?post.author||'':'')+'"></div>'+
+    '<div class="form-group"><label>비밀번호 <span class="req">*</span> <span style="font-weight:400;color:var(--g400)">(수정·삭제 시 필요)</span></label><input type="password" class="form-input" id="bpw-'+b+'" placeholder="4자리 이상"></div>')+
+    '<div class="form-group"><label>제목 <span class="req">*</span></label><input type="text" class="form-input" id="bt-'+b+'" placeholder="제목" value="'+(post?post.title.replace(/"/g,'&quot;'):'')+'"></div>'+
+    '<div class="form-group"><label>내용 <span class="req">*</span></label><textarea class="form-input" id="bb-'+b+'" rows="8" placeholder="내용을 입력하세요">'+(post?post.body:'')+'</textarea></div>'+
+    (isEdit?'<input type="hidden" id="bei-'+b+'" value="'+editId+'">':'')+
+    '<div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn btn-secondary" onclick="closeBoardWrite(\''+b+'\')">취소</button><button class="btn btn-primary" onclick="saveBoardPost(\''+b+'\','+(isEdit?'true':'false')+')">'+( isEdit?'수정완료':'등록하기')+'</button></div>';
+  w.classList.remove('hidden');
+}
+function closeBoardWrite(b){document.getElementById('bw-'+b).classList.add('hidden');}
+function saveBoardPost(b,isEdit){
+  var isAdmin=BOARDS[b].admin;
+  var pw=document.getElementById('bpw-'+b).value;
+  if(isAdmin){if(pw!==ADMIN_PW){alert('관리자 비밀번호가 올바르지 않습니다.');return;}}
+  else{if(!pw||pw.length<4){alert('비밀번호를 4자리 이상 입력해 주세요.');return;}}
+  var title=document.getElementById('bt-'+b).value.trim();
+  var body=document.getElementById('bb-'+b).value.trim();
+  if(!title||!body){alert('제목과 내용을 입력해 주세요.');return;}
+  var author=isAdmin?'관리자':(document.getElementById('bau-'+b)?document.getElementById('bau-'+b).value.trim()||'익명':'익명');
+  var arr=bGet(b);
+  if(isEdit){
+    var eid=parseInt(document.getElementById('bei-'+b).value);
+    var idx=arr.findIndex(function(x){return x.id===eid;});
+    if(idx===-1){alert('수정할 글을 찾을 수 없습니다.');return;}
+    if(!isAdmin&&arr[idx].pw!==pw&&pw!==ADMIN_PW){alert('비밀번호가 일치하지 않습니다.');return;}
+    arr[idx].title=title;arr[idx].body=body;arr[idx].author=author;arr[idx].date=dateStr()+' (수정)';
+  }else{
+    arr.unshift({id:Date.now(),date:dateStr(),cat:isAdmin?'안내':'일반',pinned:false,title:title,body:body,author:author,pw:isAdmin?ADMIN_PW:pw});
+  }
+  bSet(b,arr);closeBoardWrite(b);renderBoard(b);alert(isEdit?'수정되었습니다.':'등록되었습니다.');
+}
+function deleteBoardPost(b,id){
+  if(!confirm('삭제하시겠습니까?'))return;
+  var arr=bGet(b);var post=arr.find(function(x){return x.id===id;});
+  if(!post){var pw=prompt('관리자 비밀번호:');if(pw!==ADMIN_PW){alert('기본 글은 관리자만 삭제 가능');return;}
+    BOARDS[b].defaults=BOARDS[b].defaults.filter(function(x){return x.id!==id;});renderBoard(b);return;}
+  var pw=prompt('비밀번호를 입력하세요:');
+  if(BOARDS[b].admin){if(pw!==ADMIN_PW){alert('비밀번호 오류');return;}}
+  else{if(pw!==post.pw&&pw!==ADMIN_PW){alert('비밀번호가 일치하지 않습니다.');return;}}
+  bSet(b,arr.filter(function(x){return x.id!==id;}));renderBoard(b);
+}
+function editBoardPost(b,id){
+  var arr=bGet(b);var post=arr.find(function(x){return x.id===id;});
+  if(!post){alert('기본 글은 수정할 수 없습니다.');return;}
+  var pw=prompt('비밀번호를 입력하세요:');
+  if(BOARDS[b].admin){if(pw!==ADMIN_PW){alert('비밀번호 오류');return;}}
+  else{if(pw!==post.pw&&pw!==ADMIN_PW){alert('비밀번호가 일치하지 않습니다.');return;}}
+  openBoardWrite(b,id);
+}
+function rKey(b){return 'replies_'+b;}
+function rGet(b,pid){try{var s=localStorage.getItem(rKey(b));var a=s?JSON.parse(s):{};return a[pid]||[];}catch(e){return[];}}
+function rSet(b,pid,arr){try{var s=localStorage.getItem(rKey(b));var a=s?JSON.parse(s):{};a[pid]=arr;localStorage.setItem(rKey(b),JSON.stringify(a));}catch(e){}}
+function renderBoard(b){
+  var all=bAll(b);
+  var list=document.getElementById('bl-'+b);
+  var detail=document.getElementById('bd-'+b);
+  list.classList.remove('hidden');detail.classList.add('hidden');
+  if(all.length===0){list.innerHTML='<div style="text-align:center;padding:60px 0;color:var(--g400)">등록된 글이 없습니다.</div>';return;}
+  list.innerHTML=all.map(function(n){
+    var rc=rGet(b,n.id).length;
+    var cc=catCls(n.cat);
+    return '<div class="notice-item '+(n.pinned?'pinned':'')+'" onclick="showBoardPost(\''+b+'\','+n.id+')"><div class="info"><div class="tags"><span class="tag '+cc+'">'+n.cat+'</span>'+(n.pinned?'<span class="tag tag-red">📌 필독</span>':'')+(n.author&&n.author!=='관리자'?'<span class="tag tag-gray">'+n.author+'</span>':'')+(rc?'<span class="tag tag-accent">💬'+rc+'</span>':'')+'</div><div class="title">'+n.title+'</div></div><div class="date">'+n.date+'</div></div>';
+  }).join('');
+}
+function showBoardPost(b,id){
+  var all=bAll(b);
+  var n=all.find(function(x){return x.id===id;});if(!n)return;
+  document.getElementById('bl-'+b).classList.add('hidden');
+  var d=document.getElementById('bd-'+b);d.classList.remove('hidden');
+  var isStored=bGet(b).find(function(x){return x.id===id;});
+  var btns='<div style="display:flex;gap:6px;margin-top:4px">';
+  if(isStored){btns+='<button onclick="editBoardPost(\''+b+'\','+n.id+')" style="background:none;border:1px solid var(--g200);color:var(--g600);font-size:12px;padding:4px 12px;border-radius:6px;cursor:pointer">수정</button>';}
+  btns+='<button onclick="deleteBoardPost(\''+b+'\','+n.id+')" style="background:none;border:1px solid var(--g200);color:var(--red);font-size:12px;padding:4px 12px;border-radius:6px;cursor:pointer">삭제</button></div>';
+  var replyHtml='';
+  if(b==='survey'||b==='board'){
+    var replies=rGet(b,id);
+    replyHtml='<div style="margin-top:28px;border-top:1px solid var(--g100);padding-top:20px"><h4 style="font-size:15px;font-weight:700;color:var(--g800);margin-bottom:14px">💬 댓글 ('+replies.length+')</h4>';
+    replyHtml+=replies.map(function(r){return '<div style="padding:12px 16px;background:var(--g50);border-radius:10px;margin-bottom:8px;border:1px solid var(--g100)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><span style="font-size:13px;font-weight:600;color:var(--g700)">'+r.author+'</span><span style="font-size:11px;color:var(--g400)">'+r.date+'</span></div><div style="font-size:13px;color:var(--g600);line-height:1.6">'+linkify(r.text)+'</div></div>';}).join('');
+    replyHtml+='<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><input type="text" id="rn-'+b+'-'+id+'" placeholder="이름" class="form-input" style="width:100px;padding:8px 12px;font-size:13px"><input type="text" id="rt-'+b+'-'+id+'" placeholder="댓글을 입력하세요" class="form-input" style="flex:1;min-width:150px;padding:8px 12px;font-size:13px"><button class="btn btn-primary" style="padding:8px 16px;font-size:13px" onclick="addReply(\''+b+'\','+id+')">등록</button></div></div>';
+  }
+  d.innerHTML='<div class="notice-detail"><button class="back" onclick="renderBoard(\''+b+'\')">← 목록으로</button><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="tag '+catCls(n.cat)+'">'+n.cat+'</span>'+btns+'</div><h2>'+n.title+'</h2><div class="meta">'+n.date+(n.author?' · '+n.author:'')+'</div><div class="body">'+linkify(n.body)+'</div>'+replyHtml+'</div>';
+}
+function addReply(b,pid){
+  var name=document.getElementById('rn-'+b+'-'+pid).value.trim()||'익명';
+  var text=document.getElementById('rt-'+b+'-'+pid).value.trim();
+  if(!text){alert('댓글 내용을 입력해 주세요.');return;}
+  var replies=rGet(b,pid);replies.push({author:name,text:text,date:dateStr()});
+  rSet(b,pid,replies);showBoardPost(b,pid);
+}
+window.openBoardWrite=openBoardWrite;window.closeBoardWrite=closeBoardWrite;window.saveBoardPost=saveBoardPost;
+window.deleteBoardPost=deleteBoardPost;window.editBoardPost=editBoardPost;
+window.renderBoard=renderBoard;window.showBoardPost=showBoardPost;window.addReply=addReply;
+
+function initBoards(){Object.keys(BOARDS).forEach(function(b){renderBoard(b);});}
+
+function toggleMobileNav(){
+  var nav=document.getElementById('nav');
+  var btn=document.getElementById('mobile-toggle');
+  var isOpen=nav.classList.toggle('open');
+  btn.innerHTML=isOpen
+    ?'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+    :'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>';
+}
+function closeMobileNav(){
+  var nav=document.getElementById('nav');
+  var btn=document.getElementById('mobile-toggle');
+  nav.classList.remove('open');
+  btn.innerHTML='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>';
+}
+
+function navigate(page,skipHash){
+  currentPage=page;
+  closeMobileNav();
+  document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));
+  var navPage=page==='advisory_apply'?'advisory':page;
+  if(page.indexOf('plaza_')===0)navPage='plaza';
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===navPage));
+  var el=document.getElementById('page-'+page);
+  if(el)el.classList.remove('hidden');
+  if(!skipHash)window.location.hash=page;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+async function submitForm(){
+  var name=document.getElementById('f-name').value.trim();
+  var email=document.getElementById('f-email').value.trim();
+  var phone=document.getElementById('f-phone').value.trim();
+  var org=document.getElementById('f-org').value.trim()||'미기재';
+  var position=document.getElementById('f-position').value.trim()||'미기재';
+  var motive=document.getElementById('f-motive').value.trim()||'없음';
+  var career=document.getElementById('f-career').value.trim()||'없음';
+  var startdate=document.getElementById('f-startdate').value.trim()||'미기재';
+  var days=document.getElementById('f-days').value.trim()||'미기재';
+  var note=document.getElementById('f-note').value.trim()||'없음';
+  var submitBtn=document.getElementById('submit-btn');
+  var originalBtnHtml=submitBtn.innerHTML;
+  submitBtn.disabled=true;
+  submitBtn.textContent='제출 중...';
+
+  try{
+    var response=await fetch(API_BASE_URL+'/api/applications',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        name:name,
+        email:email,
+        phone:phone,
+        organization:org,
+        position:position,
+        group_name:selectedGroup,
+        motive:motive,
+        career:career,
+        start_date:startdate,
+        available_days:days,
+        note:note,
+        agreed_to_privacy:true
+      })
+    });
+
+    if(!response.ok){
+      var errorText='제출에 실패했습니다.';
+      try{
+        var errorData=await response.json();
+        if(errorData&&errorData.detail){
+          errorText=typeof errorData.detail==='string' ? errorData.detail : JSON.stringify(errorData.detail);
+        }
+      }catch(e){}
+      throw new Error(errorText);
+    }
+
+    var result=null;
+    try{
+      result=await response.json();
+    }catch(e){}
+
+    document.getElementById('apply-form').classList.add('hidden');
+    document.getElementById('apply-sent').classList.remove('hidden');
+    if(result&&result.email_sent===false){
+      alert('지원서는 저장되었지만 이메일 발송은 실패했습니다.\n\n사유: '+(result.email_error||'알 수 없는 오류'));
+    }
+  }catch(error){
+    alert((error&&error.message?error.message:'제출 중 오류가 발생했습니다.')+'\n\n현재 API URL: '+API_BASE_URL);
+    submitBtn.disabled=false;
+    submitBtn.innerHTML=originalBtnHtml;
+    return;
+  }
+
+  submitBtn.innerHTML=originalBtnHtml;
+}
+
+async function submitForm(){
+  var name=document.getElementById('f-name').value.trim();
+  var email=document.getElementById('f-email').value.trim();
+  var phone=document.getElementById('f-phone').value.trim();
+  var org=document.getElementById('f-org').value.trim()||'미기재';
+  var position=document.getElementById('f-position').value.trim()||'미기재';
+  var motive=document.getElementById('f-motive').value.trim()||'없음';
+  var career=document.getElementById('f-career').value.trim()||'없음';
+  var startdate=document.getElementById('f-startdate').value.trim()||'미기재';
+  var days=document.getElementById('f-days').value.trim()||'미기재';
+  var note=document.getElementById('f-note').value.trim()||'없음';
+  var submitBtn=document.getElementById('submit-btn');
+  var originalBtnHtml=submitBtn.innerHTML;
+  submitBtn.disabled=true;
+  submitBtn.textContent='제출 중...';
+
+  try{
+    var response=await fetch(API_BASE_URL+'/api/applications',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        name:name,
+        email:email,
+        phone:phone,
+        organization:org,
+        position:position,
+        group_name:selectedGroup,
+        motive:motive,
+        career:career,
+        start_date:startdate,
+        available_days:days,
+        note:note,
+        agreed_to_privacy:true
+      })
+    });
+
+    if(!response.ok){
+      var errorText='제출에 실패했습니다.';
+      try{
+        var errorData=await response.json();
+        if(errorData&&errorData.detail){
+          errorText=typeof errorData.detail==='string' ? errorData.detail : JSON.stringify(errorData.detail);
+        }
+      }catch(e){}
+      throw new Error(errorText);
+    }
+
+    var result=null;
+    try{
+      result=await response.json();
+    }catch(e){}
+
+    document.getElementById('apply-form').classList.add('hidden');
+    document.getElementById('apply-sent').classList.remove('hidden');
+    if(result&&result.email_sent===false){
+      alert('지원서는 저장되었지만 이메일 발송은 실패했습니다.\n\n사유: '+(result.email_error||'알 수 없는 오류'));
+    }
+  }catch(error){
+    alert((error&&error.message?error.message:'제출 중 오류가 발생했습니다.')+'\n\n현재 API URL: '+API_BASE_URL);
+    submitBtn.disabled=false;
+    submitBtn.innerHTML=originalBtnHtml;
+    return;
+  }
+
+  submitBtn.innerHTML=originalBtnHtml;
+}
+
+window.navigate=navigate;
+window.toggleMobileNav=toggleMobileNav;
+window.closeMobileNav=closeMobileNav;
+
+window.addEventListener('hashchange',function(){
+  var h=window.location.hash.replace('#','');
+  if(h&&h!==currentPage)navigate(h,true);
+});
+window.addEventListener('load',function(){
+  var h=window.location.hash.replace('#','');
+  if(h)navigate(h,true);
+});
+document.querySelectorAll('nav button').forEach(btn=>{btn.addEventListener('click',()=>navigate(btn.dataset.page))});
+window.addEventListener('scroll',()=>{document.getElementById('header').classList.toggle('scrolled',window.scrollY>20)});
+
+function renderServices(){
+  document.getElementById('service-list').innerHTML=services.map(s=>'<div class="service-item"><div class="img-placeholder" style="width:180px;height:140px;flex-shrink:0"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span style="font-size:12px">'+s.name+' 이미지</span></div><div class="info"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:24px">'+s.icon+'</span><span class="tag tag-accent">'+s.tag+'</span></div><h3>'+s.name+'</h3><p>'+s.desc+'</p><div class="feature-tags">'+s.features.map(f=>'<span class="feature-tag">'+f+'</span>').join('')+'</div></div></div>').join('');
+}
+function renderAdvisory(){
+  document.getElementById('advisory-groups').innerHTML=advisoryGroups.map(g=>'<div class="group-card" style="border-top:4px solid '+g.color+'"><div class="head"><span class="icon">'+g.icon+'</span><div><div class="name">'+g.name+'</div><div style="font-size:13px;font-weight:600;color:'+g.color+'">'+g.count+'</div></div></div><p>'+g.desc+'</p><div class="role-tags">'+g.roles.map(r=>'<span class="role-tag">'+r+'</span>').join('')+'</div></div>').join('');
+  document.getElementById('timeline').innerHTML=timelineData.map(t=>'<div class="timeline-item"><div class="timeline-dot '+(t.active?'active':'pending')+'"></div><div class="timeline-info"><div class="timeline-period">'+t.period+'</div><div class="timeline-title">'+t.title+'</div></div><span class="tag '+(t.active?'tag-green':'tag-gray')+'">'+(t.active?'진행중':'예정')+'</span></div>').join('');
+}
+function renderDivisions(){
+  var cm={gold:'var(--gold)',accent:'var(--accent)',green:'var(--green)'};
+  document.getElementById('divisions-content').innerHTML=divisions.map(t=>'<div class="track-header"><span style="font-size:24px">'+t.icon+'</span><h2>'+t.track+'</h2><div class="track-line"></div></div><div class="division-grid">'+t.groups.map(g=>'<div class="division-card '+t.border+'"><div class="top"><h4>'+g.name+'</h4><span class="count" style="color:'+cm[t.color]+'">'+g.count+'</span></div><div class="desc">'+g.desc+'</div><div class="members"><span style="font-weight:600">대상:</span> '+g.members+'</div></div>').join('')+'</div>').join('');
+}
+/* old notice functions removed - replaced by board system */
+
+document.getElementById('group-select').addEventListener('click',function(e){
+  var btn=e.target.closest('.group-option');if(!btn)return;
+  document.querySelectorAll('.group-option').forEach(function(b){b.classList.remove('selected')});
+  btn.classList.add('selected');selectedGroup=btn.dataset.val;validateForm();
+});
+function validateForm(){
+  var n=document.getElementById('f-name').value.trim();
+  var e=document.getElementById('f-email').value.trim();
+  var p=document.getElementById('f-phone').value.trim();
+  var a=document.getElementById('f-agree').checked;
+  document.getElementById('submit-btn').disabled=!(n&&e&&p&&selectedGroup&&a);
+}
+document.getElementById('f-name').addEventListener('input',validateForm);
+document.getElementById('f-email').addEventListener('input',validateForm);
+document.getElementById('f-phone').addEventListener('input',validateForm);
+document.getElementById('f-agree').addEventListener('change',validateForm);
+
+function downloadForm(){
+  var html='<!DOCTYPE html><html><head><meta charset="utf-8"><title>모두의 경찰관 자문단 지원양식</title><style>body{font-family:Malgun Gothic,sans-serif;max-width:700px;margin:40px auto;padding:20px;color:#333}h1{font-size:22px;text-align:center;border-bottom:3px solid #1A3A6B;padding-bottom:12px;color:#1A3A6B}h2{font-size:16px;margin-top:28px;color:#1A3A6B;border-left:4px solid #3B82F6;padding-left:10px}table{width:100%;border-collapse:collapse;margin:12px 0}th,td{border:1px solid #CBD5E1;padding:10px 14px;text-align:left;font-size:14px}th{background:#F1F5F9;width:140px;font-weight:600;color:#334155}.note{font-size:12px;color:#64748B;line-height:1.6;margin-top:8px}.footer{margin-top:40px;text-align:center;font-size:13px;color:#94A3B8;border-top:1px solid #E2E8F0;padding-top:16px}label{margin-right:20px;font-size:14px}</style></head><body><h1>「모두의 경찰관」 자문단 지원 양식</h1><p class="note">※ 본 양식을 작성하신 후 <strong>'+SUBMIT_EMAIL+'</strong>로 제출해 주시기 바랍니다.</p><h2>1. 인적사항</h2><table><tr><th>성명</th><td></td></tr><tr><th>연락처</th><td></td></tr><tr><th>이메일</th><td></td></tr><tr><th>소속기관/학교</th><td></td></tr><tr><th>직위/학년</th><td></td></tr></table><h2>2. 지원 분야</h2><table><tr><td><label>☐ 국민자문단 (일반시민)</label><label>☐ 국민자문단 (대학생)</label><label>☐ 국민자문단 (치안협력단체)</label><br><label>☐ 현장자문단 (경찰관/업무담당자)</label><br><label>☐ 전문가자문단 (AI·보안 개발자/연구원)</label></td></tr></table><h2>3. 지원 동기</h2><table><tr><td style="height:100px;vertical-align:top"></td></tr></table><h2>4. 관련 경력 및 전문성</h2><table><tr><td style="height:100px;vertical-align:top"></td></tr></table><h2>5. 활동 가능 기간</h2><table><tr><th>시작 가능일</th><td></td></tr><tr><th>활동 가능 요일</th><td></td></tr><tr><th>비고</th><td></td></tr></table><h2>6. 개인정보 수집·이용 동의</h2><table><tr><td><p style="font-size:13px;line-height:1.6">경찰청은 자문단 운영을 위해 성명, 연락처, 이메일, 소속 정보를 수집하며, 사업 종료 후 3개월 이내 파기합니다.</p><p style="margin-top:8px"><label>☐ 동의함</label><label>☐ 동의하지 않음</label></p></td></tr></table><p style="text-align:right;margin-top:32px;font-size:14px">작성일: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;년 &nbsp;&nbsp;&nbsp;&nbsp;월 &nbsp;&nbsp;&nbsp;&nbsp;일<br><br>지원자: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(서명)</p><div class="footer">경찰청 미래치안정책국 치안인공지능정책과 | '+SUBMIT_EMAIL+'</div></body></html>';
+  var blob=new Blob([html],{type:'text/html'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download='모두의경찰관_자문단_지원양식.html';a.click();URL.revokeObjectURL(url);
+}
+
+function submitForm(){
+  var name=document.getElementById('f-name').value.trim();
+  var email=document.getElementById('f-email').value.trim();
+  var phone=document.getElementById('f-phone').value.trim();
+  var org=document.getElementById('f-org').value.trim()||'미기재';
+  var position=document.getElementById('f-position').value.trim()||'미기재';
+  var motive=document.getElementById('f-motive').value.trim()||'없음';
+  var career=document.getElementById('f-career').value.trim()||'없음';
+  var startdate=document.getElementById('f-startdate').value.trim()||'미기재';
+  var days=document.getElementById('f-days').value.trim()||'미기재';
+  var note=document.getElementById('f-note').value.trim()||'없음';
+  var subject=encodeURIComponent('[자문단 지원서] '+selectedGroup+' - '+name);
+  var body=encodeURIComponent(
+    '==============================\n'+
+    '  모두의 경찰관 자문단 지원서\n'+
+    '==============================\n\n'+
+    '■ 1. 인적사항\n'+
+    '  성명: '+name+'\n'+
+    '  연락처: '+phone+'\n'+
+    '  이메일: '+email+'\n'+
+    '  소속기관/학교: '+org+'\n'+
+    '  직위/학년: '+position+'\n\n'+
+    '■ 2. 지원 분야\n'+
+    '  '+selectedGroup+'\n\n'+
+    '■ 3. 지원 동기\n'+
+    '  '+motive+'\n\n'+
+    '■ 4. 관련 경력 및 전문성\n'+
+    '  '+career+'\n\n'+
+    '■ 5. 활동 가능 기간\n'+
+    '  시작 가능일: '+startdate+'\n'+
+    '  활동 가능 요일: '+days+'\n'+
+    '  비고: '+note+'\n\n'+
+    '■ 6. 개인정보 수집·이용 동의: 동의함\n\n'+
+    '==============================\n'
+  );
+  alert('This backup file still uses the legacy template. Please use frontend/index.html for the live submission flow.');
+}
+function resetForm(){
+  var fields=['f-name','f-email','f-phone','f-org','f-position','f-motive','f-career','f-startdate','f-days','f-note'];
+  fields.forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('f-agree').checked=false;
+  selectedGroup='';document.querySelectorAll('.group-option').forEach(function(b){b.classList.remove('selected')});
+  document.getElementById('submit-btn').disabled=true;
+  document.getElementById('apply-form').classList.remove('hidden');document.getElementById('apply-sent').classList.add('hidden');
+}
+
+async function submitForm(){
+  var name=document.getElementById('f-name').value.trim();
+  var email=document.getElementById('f-email').value.trim();
+  var phone=document.getElementById('f-phone').value.trim();
+  var org=document.getElementById('f-org').value.trim()||'미기재';
+  var position=document.getElementById('f-position').value.trim()||'미기재';
+  var motive=document.getElementById('f-motive').value.trim()||'없음';
+  var career=document.getElementById('f-career').value.trim()||'없음';
+  var startdate=document.getElementById('f-startdate').value.trim()||'미기재';
+  var days=document.getElementById('f-days').value.trim()||'미기재';
+  var note=document.getElementById('f-note').value.trim()||'없음';
+  var submitBtn=document.getElementById('submit-btn');
+  var originalBtnHtml=submitBtn.innerHTML;
+  submitBtn.disabled=true;
+  submitBtn.textContent='제출 중...';
+
+  try{
+    var response=await fetch(API_BASE_URL+'/api/applications',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        name:name,
+        email:email,
+        phone:phone,
+        organization:org,
+        position:position,
+        group_name:selectedGroup,
+        motive:motive,
+        career:career,
+        start_date:startdate,
+        available_days:days,
+        note:note,
+        agreed_to_privacy:true
+      })
+    });
+
+    if(!response.ok){
+      var errorText='제출에 실패했습니다.';
+      try{
+        var errorData=await response.json();
+        if(errorData&&errorData.detail){
+          errorText=typeof errorData.detail==='string' ? errorData.detail : JSON.stringify(errorData.detail);
+        }
+      }catch(e){}
+      throw new Error(errorText);
+    }
+
+    document.getElementById('apply-form').classList.add('hidden');
+    document.getElementById('apply-sent').classList.remove('hidden');
+  }catch(error){
+    alert((error&&error.message?error.message:'제출 중 오류가 발생했습니다.')+'\n\n현재 API URL: '+API_BASE_URL);
+    submitBtn.disabled=false;
+    submitBtn.innerHTML=originalBtnHtml;
+    return;
+  }
+
+  submitBtn.innerHTML=originalBtnHtml;
+}
+
+/* ─── EXPOSE ALL ONCLICK FUNCTIONS TO WINDOW ─── */
+window.navigate=navigate;
+window.toggleMobileNav=toggleMobileNav;
+window.closeMobileNav=closeMobileNav;
+window.downloadForm=downloadForm;
+window.submitForm=submitForm;
+window.resetForm=resetForm;
+window.validateForm=validateForm;
+
+/* ─── INIT ─── */
+renderServices();renderAdvisory();renderDivisions();initBoards();
+</script>
+</body>
+</html>
