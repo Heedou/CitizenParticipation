@@ -16,6 +16,8 @@ services:
         value: https://your-vercel-domain.vercel.app
       - key: ENVIRONMENT
         value: production
+      - key: PYTHON_VERSION
+        value: 3.11.11
       - key: SMTP_HOST
         value: smtp.gmail.com
       - key: SMTP_PORT
