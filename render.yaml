@@ -13,7 +13,7 @@ services:
           name: citizenparticipation-db
           property: connectionString
       - key: FRONTEND_ORIGIN
-        value: https://citizen-participation-git-main-heedou123-2594s-projects.vercel.app/
+        value: https://citizen-participation-b9d80dky2-heedou123-2594s-projects.vercel.app/
       - key: ENVIRONMENT
         value: production
       - key: PYTHON_VERSION
