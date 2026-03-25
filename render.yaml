@@ -31,7 +31,7 @@ services:
       - key: MAIL_FROM
         value: heedou123@gmail.com
       - key: ADMIN_EMAIL
-        value: heedou123@police.go.kr
+        value: heedou123@gmail.com
 databases:
   - name: citizenparticipation-db
     plan: free
