@@ -1045,8 +1045,16 @@ async function submitForm(){
       result=await response.json();
     }catch(e){}
 
+    var result=null;
+    try{
+      result=await response.json();
+    }catch(e){}
+
     document.getElementById('apply-form').classList.add('hidden');
     document.getElementById('apply-sent').classList.remove('hidden');
+    if(result&&result.email_sent===false){
+      alert('지원서는 저장되었지만 이메일 발송은 실패했습니다.\n\n사유: '+(result.email_error||'알 수 없는 오류'));
+    }
     if(result&&result.email_sent===false){
       alert('지원서는 저장되었지만 이메일 발송은 실패했습니다.\n\n사유: '+(result.email_error||'알 수 없는 오류'));
     }

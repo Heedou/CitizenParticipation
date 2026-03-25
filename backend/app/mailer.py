@@ -45,6 +45,7 @@ def send_application_email(payload: ApplicationSubmissionCreate, settings: Setti
         headers={
             "Authorization": f"Bearer {settings.resend_api_key}",
             "Content-Type": "application/json",
+            "User-Agent": "citizenparticipation-backend/1.0",
         },
         method="POST",
     )
