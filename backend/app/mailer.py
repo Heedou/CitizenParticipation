@@ -45,4 +45,4 @@ def send_application_email(payload: ApplicationSubmissionCreate, settings: Setti
             smtp.login(settings.smtp_username, settings.smtp_password)
             smtp.send_message(message)
     except Exception as exc:
-        raise EmailDeliveryError("Failed to deliver the application email.") from exc
+        raise EmailDeliveryError(f"Failed to deliver the application email: {exc}") from exc

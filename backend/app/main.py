@@ -73,7 +73,7 @@ def create_application(
     except EmailDeliveryError as exc:
         email_sent = False
         email_error = str(exc)
-        logger.warning("Application email delivery failed: %s", exc)
+        logger.exception("Application email delivery failed: %s", exc)
 
     return ApplicationSubmissionResponse(
         id=submission.id,
