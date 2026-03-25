@@ -30,12 +30,9 @@ class Settings:
             os.getenv("DATABASE_URL", "sqlite:///./citizen_participation.db")
         )
         self.frontend_origin = os.getenv("FRONTEND_ORIGIN", "*")
-        self.smtp_host = os.getenv("SMTP_HOST", "").strip()
-        self.smtp_port = int(os.getenv("SMTP_PORT", "587"))
-        self.smtp_username = os.getenv("SMTP_USERNAME", "").strip()
-        self.smtp_password = os.getenv("SMTP_PASSWORD", "")
-        self.smtp_use_tls = os.getenv("SMTP_USE_TLS", "true").strip().lower() == "true"
-        self.mail_from = os.getenv("MAIL_FROM", self.smtp_username).strip()
+        self.resend_api_url = os.getenv("RESEND_API_URL", "https://api.resend.com/emails").strip()
+        self.resend_api_key = os.getenv("RESEND_API_KEY", "").strip()
+        self.mail_from = os.getenv("MAIL_FROM", "").strip()
         self.admin_email = os.getenv("ADMIN_EMAIL", "1coziness@police.go.kr").strip()
 
     @staticmethod
@@ -53,17 +50,8 @@ class Settings:
         return [origin.strip() for origin in self.frontend_origin.split(",") if origin.strip()]
 
     @property
-    def smtp_configured(self) -> bool:
-        return all(
-            [
-                self.smtp_host,
-                self.smtp_port,
-                self.smtp_username,
-                self.smtp_password,
-                self.mail_from,
-                self.admin_email,
-            ]
-        )
+    def email_configured(self) -> bool:
+        return all([self.resend_api_key, self.mail_from, self.admin_email])
 
 
 @lru_cache

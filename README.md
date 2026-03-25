@@ -55,14 +55,20 @@ git push -u origin main
 
 Application submissions are stored in the database and then emailed to the administrator from the backend.
 
+This project uses the Resend Email API for deployed environments.
+
 Set these environment variables before using the apply form:
 
-- `SMTP_HOST`
-- `SMTP_PORT`
-- `SMTP_USERNAME`
-- `SMTP_PASSWORD`
-- `SMTP_USE_TLS`
+- `RESEND_API_KEY`
 - `MAIL_FROM`
 - `ADMIN_EMAIL`
 
-For Gmail, use an App Password rather than your normal account password.
+Optional:
+
+- `RESEND_API_URL` (defaults to `https://api.resend.com/emails`)
+
+Notes:
+
+- `MAIL_FROM` must use a sender address supported by your Resend account.
+- For production delivery, verify your own domain in Resend and use that domain in `MAIL_FROM`.
+- The default `onboarding@resend.dev` sender is only suitable for limited testing.
